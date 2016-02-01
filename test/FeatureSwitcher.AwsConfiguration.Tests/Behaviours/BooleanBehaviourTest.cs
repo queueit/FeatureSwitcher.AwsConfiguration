@@ -15,7 +15,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         {
             BooleanBehaviour boolean = new BooleanBehaviour();
 
-            var enabled = boolean.Behaviour(new Feature.Name(typeof (TestFeature), typeof (TestFeature).FullName));
+            var enabled = boolean.Behaviour(new Feature.Name(typeof (TestFeature1), typeof (TestFeature1).FullName));
 
             Assert.False(enabled);
         }
@@ -25,7 +25,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         {
             BooleanBehaviour boolean = new BooleanBehaviour();
             boolean.SetConfiguration(new Dictionary<string, bool> { { "BOOL", false } });
-            var enabled = boolean.Behaviour(new Feature.Name(typeof(TestFeature), typeof(TestFeature).FullName));
+            var enabled = boolean.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
             Assert.False(enabled);
         }
@@ -35,7 +35,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         {
             BooleanBehaviour boolean = new BooleanBehaviour();
             boolean.SetConfiguration(new Dictionary<string, bool> { { "BOOL", true }});
-            var enabled = boolean.Behaviour(new Feature.Name(typeof(TestFeature), typeof(TestFeature).FullName));
+            var enabled = boolean.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
             Assert.True(enabled);
         }

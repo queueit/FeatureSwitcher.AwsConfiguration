@@ -75,35 +75,56 @@ namespace FeatureSwitcher.AwsConfiguration
 
             try
             {
-                var featureConfig = await this._restClient
-                    .GetAsync(string.Concat(
-                        this._apiEndpoint,
-                        "feature?FeatureName=",
-                        featureName));
+                var featureConfig = await GetConfigurationFromService(featureName);
 
-                if (!FeatureConfigIsValid(featureConfig))
-                    return;
-
-                Type behaviourType = this.FindType(featureConfig["Type"].ToString());
-
-                if (behaviourType != null)
-                {
-                    var featureBehaviour = Activator.CreateInstance(behaviourType) as IBehaviour;
-
-                    if (featureBehaviour != null)
-                    {
-                        featureBehaviour.SetConfiguration(featureConfig["Value"]);
-
-                        cache.AddOrUpdate(
-                            featureName,
-                            (key) => new BehaviourCacheItem(featureBehaviour),
-                            (key, value) => new BehaviourCacheItem(featureBehaviour));
-                    }
-                }
+                if (FeatureConfigIsValid(featureConfig))
+                    AddToCache(featureName, featureConfig);
+                else
+                    await CreateConfigurationEntry(featureName);
             }
             catch (ConfigurationRequestException ex)
             {
                 throw ex;
+            }
+        }
+
+        private async Task<dynamic> GetConfigurationFromService(string featureName)
+        {
+            var featureConfig = await this._restClient
+                .GetAsync(GetFeatureEndpoint(featureName));
+            return featureConfig;
+        }
+
+        private string GetFeatureEndpoint(string featureName)
+        {
+            return string.Concat(
+                this._apiEndpoint,
+                "feature?FeatureName=",
+                featureName);
+        }
+
+        private async Task<dynamic> CreateConfigurationEntry(string featureName)
+        {
+            return await this._restClient.PutAsync(GetFeatureEndpoint(featureName), null);
+        }
+
+        private void AddToCache(string featureName, dynamic featureConfig)
+        {
+            Type behaviourType = this.FindType(featureConfig["Type"].ToString());
+
+            if (behaviourType != null)
+            {
+                var featureBehaviour = Activator.CreateInstance(behaviourType) as IBehaviour;
+
+                if (featureBehaviour != null)
+                {
+                    featureBehaviour.SetConfiguration(featureConfig["Value"]);
+
+                    cache.AddOrUpdate(
+                        featureName,
+                        (key) => new BehaviourCacheItem(featureBehaviour),
+                        (key, value) => new BehaviourCacheItem(featureBehaviour));
+                }
             }
         }
 

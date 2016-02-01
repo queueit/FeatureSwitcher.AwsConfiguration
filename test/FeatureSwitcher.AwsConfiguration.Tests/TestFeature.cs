@@ -1,8 +1,5 @@
 namespace FeatureSwitcher.AwsConfiguration.Tests
 {
-    public class TestFeature : IFeature
-    { }
-
     public class TestFeature1 : IFeature
     { }
 
