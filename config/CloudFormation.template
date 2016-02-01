@@ -1,0 +1,76 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09", 
+  "Description": "FeatureSwitcher.AwsConfiguration", 
+  "Resources": {
+    "DynamoConfigTable" : {
+	   "Type" : "AWS::DynamoDB::Table",
+	   "Properties" : {
+		  "AttributeDefinitions" : [
+			  {
+				"AttributeName" : "FeatureName",
+				"AttributeType" : "S"   
+			  }
+		  ],
+			"KeySchema" : [
+			  {
+				"AttributeName" : "FeatureName",
+				"KeyType" : "HASH"
+			  }
+		  ],		  
+		  "ProvisionedThroughput" : {
+			  "ReadCapacityUnits" : "10",
+			  "WriteCapacityUnits" : "10"
+        },
+		"TableName" : "FeatureSwitcherConfig"
+	   }
+	},
+	"FeatureSwitcherRole": {
+	   "Type": "AWS::IAM::Role",
+	   "Properties": {
+		 "Path" : "/",
+		 "AssumeRolePolicyDocument": { 
+			"Version": "2012-10-17",
+  		    "Statement": [
+				{
+				  "Effect": "Allow",
+				  "Principal": {
+					"Service": "apigateway.amazonaws.com"
+				  },
+				  "Action": "sts:AssumeRole"
+				}
+			  ]
+		  },
+		  "ManagedPolicyArns": [ { "Ref": "FeatureSwitcherPolicy" } ]
+	   }
+	},
+	"FeatureSwitcherPolicy": {
+	  "Type": "AWS::IAM::ManagedPolicy",
+	  "Properties": {
+		"Description" : "FeatureSwitcher.AwsConfiguration",
+		"PolicyDocument" : {
+		  "Version": "2012-10-17",
+		  "Statement": [
+			{
+				"Sid": "FeatureSwitcherGetAndPutConfig",
+				"Effect": "Allow",
+				"Action": [
+					"dynamodb:GetItem",
+					"dynamodb:PutItem"
+				],
+				"Resource": [
+					{ "Fn::Join" : [ 
+					  ":", 
+					  [ "arn:aws:dynamodb", 
+						{ "Ref":"AWS::Region" },
+						"*", 
+						"table/FeatureSwitcherConfig" 
+					  ] ] 
+					}
+				]
+			}
+		  ]
+		}
+	  }
+	}
+  }
+}
