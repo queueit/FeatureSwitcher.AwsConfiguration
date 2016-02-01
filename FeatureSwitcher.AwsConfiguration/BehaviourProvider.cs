@@ -26,7 +26,7 @@ namespace FeatureSwitcher.AwsConfiguration
             this._apiEndpoint = apiEndpoint.EndsWith("/") ? apiEndpoint : apiEndpoint + "/";
         }
 
-        readonly ConcurrentDictionary<string, BehaviourCacheItem> cache = new ConcurrentDictionary<string, BehaviourCacheItem>(); 
+        readonly ConcurrentDictionary<string, BehaviourCacheItem> _cache = new ConcurrentDictionary<string, BehaviourCacheItem>(); 
 
         public void Setup()
         {
@@ -112,7 +112,7 @@ namespace FeatureSwitcher.AwsConfiguration
 
         private void AddOrUpdateCache(string featureName, dynamic featureConfig)
         {
-            Type behaviourType = this.FindType(featureConfig["Type"].ToString());
+            Type behaviourType = this.FindType(featureConfig["type"].ToString());
 
             if (behaviourType != null)
             {
@@ -120,9 +120,9 @@ namespace FeatureSwitcher.AwsConfiguration
 
                 if (featureBehaviour != null)
                 {
-                    featureBehaviour.SetConfiguration(featureConfig["Value"]);
+                    featureBehaviour.SetConfiguration(featureConfig["value"]);
 
-                    cache.AddOrUpdate(
+                    _cache.AddOrUpdate(
                         featureName,
                         (key) => new BehaviourCacheItem(featureBehaviour, this._cacheTimeout),
                         (key, value) => new BehaviourCacheItem(featureBehaviour, this._cacheTimeout));
@@ -133,14 +133,14 @@ namespace FeatureSwitcher.AwsConfiguration
         private static dynamic FeatureConfigIsValid(dynamic featureConfig)
         {
             return featureConfig != null && 
-                   !string.IsNullOrEmpty(featureConfig["Type"]) && 
-                   featureConfig["Type"] != "\"\"" &&
-                   featureConfig["Value"] != null;
+                   !string.IsNullOrEmpty(featureConfig["type"]) && 
+                   featureConfig["type"] != "\"\"" &&
+                   featureConfig["value"] != null;
         }
 
         private void SetFallbackBehaviour(string featureName)
         {
-            cache.AddOrUpdate(
+            _cache.AddOrUpdate(
                 featureName,
                 (name) => new BehaviourCacheItem(new BooleanBehaviour(false), this._cacheTimeout),
                 (name, behaviour) => new BehaviourCacheItem(new BooleanBehaviour(false), this._cacheTimeout));
@@ -149,7 +149,7 @@ namespace FeatureSwitcher.AwsConfiguration
 
         public IBehaviour GetBehaviour(Feature.Name name)
         {
-            var cacheItem = this.cache[name.Value];
+            var cacheItem = this._cache[name.Value];
             if (cacheItem.IsExpired)
             {
                 lock (cacheItem)    

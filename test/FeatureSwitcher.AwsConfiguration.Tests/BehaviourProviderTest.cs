@@ -1,10 +1,5 @@
 ﻿using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -12,7 +7,6 @@ using FeatureSwitcher.AwsConfiguration.Behaviours;
 using FeatureSwitcher.Configuration;
 using Rhino.Mocks;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace FeatureSwitcher.AwsConfiguration.Tests
 {
@@ -32,10 +26,24 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             Value = new { BOOL = false }
         };
 
-        [Fact(Skip = "Integration test for debugging")]
+        [Fact(Skip = "Integration test")]
         public void BehaviourProvider_Setup_Integration_Test()
         {
             var config = AwsConfig.Configure("https://b82jcihcsc.execute-api.eu-west-1.amazonaws.com/test");
+
+            Features.Are.ConfiguredBy.Custom(config.IsEnabled);
+
+            Assert.True(Feature<TestFeature1>.Is().Enabled);
+        }
+
+        [Fact(Skip = "Integration test")]
+        public async void BehaviourProvider_SetupAsync_Integration_Test()
+        {
+            var configTask = AwsConfig.ConfigureAsync("https://b82jcihcsc.execute-api.eu-west-1.amazonaws.com/test");
+
+            // Do stuff
+
+            var config = await configTask;
 
             Features.Are.ConfiguredBy.Custom(config.IsEnabled);
 
