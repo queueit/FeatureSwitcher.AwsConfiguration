@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using FeatureSwitcher.AwsConfiguration.Behaviours;
@@ -17,13 +18,6 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
 {
     public class BehaviourProviderTest
     {
-        private readonly ITestOutputHelper output;
-
-        public BehaviourProviderTest(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
-
         private object TestFeatureBooleanEnabled = new
         {
             FeatureName = typeof (TestFeature1).FullName,
@@ -49,6 +43,21 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         }
 
         [Fact]
+        public void BehaviourProvider_Setup_RestCall_Test()
+        {
+            IRestClient restClient = MockRepository.GenerateMock<IRestClient>();
+            restClient.Stub(client => client.GetAsync(null)).IgnoreArguments()
+                .Return(GeneratedGetResponse());
+            restClient.Stub(client => client.PutAsync(null, null)).IgnoreArguments()
+                .Return(Task.FromResult<dynamic>(null));
+
+            var config = AwsConfig.Configure("https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", restClient);
+
+            restClient.AssertWasCalled(client => client.GetAsync(
+                "https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test/feature?FeatureName=FeatureSwitcher.AwsConfiguration.Tests.TestFeature1"));
+        }
+
+        [Fact]
         public void BehaviourProvider_Setup_NoConfigurationAvailable_Test()
         {
             IRestClient restClient = MockRepository.GenerateMock<IRestClient>();
@@ -62,6 +71,11 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             Features.Are.ConfiguredBy.Custom(config.IsEnabled);
 
             Assert.True(Feature<TestFeature1>.Is().Disabled);
+
+            restClient.AssertWasCalled(client => client.PutAsync(
+    "https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test/feature?FeatureName=FeatureSwitcher.AwsConfiguration.Tests.TestFeature1",
+    null));
+
         }
 
         [Fact]
@@ -81,7 +95,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         }
 
         [Fact]
-        public void BehaviourProvider_Setup_ConfigurationAvailable_Bollean_Enabled_Test()
+        public void BehaviourProvider_Setup_ConfigurationAvailable_Boolean_Enabled_Test()
         {
             IRestClient restClient = MockRepository.GenerateMock<IRestClient>();
             restClient.Stub(client => client.GetAsync(null)).IgnoreArguments()
@@ -95,7 +109,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         }
 
         [Fact]
-        public void BehaviourProvider_Setup_ConfigurationAvailable_Bollean_Disabled_Test()
+        public void BehaviourProvider_Setup_ConfigurationAvailable_Boolean_Disabled_Test()
         {
             IRestClient restClient = MockRepository.GenerateMock<IRestClient>();
             restClient.Stub(client => client.GetAsync(null)).IgnoreArguments()
@@ -138,6 +152,44 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             {
                 await config;
             });
+        }
+
+        [Fact]
+        public void BehaviourProvider_CacheTimeout_Test()
+        {
+            IRestClient restClient = MockRepository.GenerateMock<IRestClient>();
+            restClient.Stub(client => client.GetAsync(null))
+                .IgnoreArguments()
+                .Return(GeneratedGetResponse(TestFeatureBooleanEnabled))
+                .Repeat.Once();
+            restClient.Stub(client => client.GetAsync(null))
+                .IgnoreArguments()
+                .Return(GeneratedGetResponse(TestFeatureBooleanDisabled));
+
+            var config = AwsConfig.Configure(
+                "https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", 
+                restClient,
+                TimeSpan.FromMilliseconds(100));
+
+            Features.Are.ConfiguredBy.Custom(config.IsEnabled);
+
+            Assert.True(Feature<TestFeature1>.Is().Enabled);
+            Assert.True(Feature<TestFeature1>.Is().Enabled);
+            Assert.True(Feature<TestFeature1>.Is().Enabled);
+            Assert.True(Feature<TestFeature1>.Is().Enabled);
+            Assert.True(Feature<TestFeature1>.Is().Enabled);
+            Assert.True(Feature<TestFeature1>.Is().Enabled);
+
+            Thread.Sleep(101); //expire cache
+
+            var x = Feature<TestFeature1>.Is().Enabled; //call once to make new request to service
+
+            restClient.AssertWasCalled(
+                client => client.GetAsync(
+                    "https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test/feature?FeatureName=FeatureSwitcher.AwsConfiguration.Tests.TestFeature1"),
+                options => options.Repeat.Twice());
+
+            Assert.False(Feature<TestFeature1>.Is().Enabled);
         }
 
 

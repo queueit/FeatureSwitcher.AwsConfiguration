@@ -14,10 +14,12 @@ namespace FeatureSwitcher.AwsConfiguration
     {
         private readonly string _apiEndpoint;
         private readonly IRestClient _restClient;
+        private readonly TimeSpan _cacheTimeout;
 
-        internal BehaviourProvider(string apiEndpoint, IRestClient restClient)
+        internal BehaviourProvider(string apiEndpoint, IRestClient restClient, TimeSpan cacheTimeout)
         {
             this._restClient = restClient;
+            _cacheTimeout = cacheTimeout;
             if (apiEndpoint == null)
                 throw new ArgumentNullException(apiEndpoint);
 
@@ -78,7 +80,7 @@ namespace FeatureSwitcher.AwsConfiguration
                 var featureConfig = await GetConfigurationFromService(featureName);
 
                 if (FeatureConfigIsValid(featureConfig))
-                    AddToCache(featureName, featureConfig);
+                    AddOrUpdateCache(featureName, featureConfig);
                 else
                     await CreateConfigurationEntry(featureName);
             }
@@ -108,7 +110,7 @@ namespace FeatureSwitcher.AwsConfiguration
             return await this._restClient.PutAsync(GetFeatureEndpoint(featureName), null);
         }
 
-        private void AddToCache(string featureName, dynamic featureConfig)
+        private void AddOrUpdateCache(string featureName, dynamic featureConfig)
         {
             Type behaviourType = this.FindType(featureConfig["Type"].ToString());
 
@@ -122,8 +124,8 @@ namespace FeatureSwitcher.AwsConfiguration
 
                     cache.AddOrUpdate(
                         featureName,
-                        (key) => new BehaviourCacheItem(featureBehaviour),
-                        (key, value) => new BehaviourCacheItem(featureBehaviour));
+                        (key) => new BehaviourCacheItem(featureBehaviour, this._cacheTimeout),
+                        (key, value) => new BehaviourCacheItem(featureBehaviour, this._cacheTimeout));
                 }
             }
         }
@@ -140,14 +142,28 @@ namespace FeatureSwitcher.AwsConfiguration
         {
             cache.AddOrUpdate(
                 featureName,
-                (name) => new BehaviourCacheItem(new BooleanBehaviour(false)),
-                (name, behaviour) => new BehaviourCacheItem(new BooleanBehaviour(false)));
+                (name) => new BehaviourCacheItem(new BooleanBehaviour(false), this._cacheTimeout),
+                (name, behaviour) => new BehaviourCacheItem(new BooleanBehaviour(false), this._cacheTimeout));
             return;
         }
 
         public IBehaviour GetBehaviour(Feature.Name name)
         {
-            return this.cache[name.Value].Behaviour;
+            var cacheItem = this.cache[name.Value];
+            if (cacheItem.IsExpired)
+            {
+                lock (cacheItem)    
+                {
+                    if (cacheItem.IsExpired)
+                    {
+                        cacheItem.ExtendCache();
+                        this.LoadConfigFromService(name.Value); // async fire and forget
+                    }
+                }
+            }
+
+            return cacheItem.Behaviour;
+
         }
     }
 }
