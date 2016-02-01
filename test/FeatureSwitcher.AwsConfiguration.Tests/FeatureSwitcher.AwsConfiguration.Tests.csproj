@@ -77,7 +77,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\FeatureSwitcher.AwsConfiguration\FeatureSwitcher.AwsConfiguration.csproj">
+    <ProjectReference Include="..\..\src\FeatureSwitcher.AwsConfiguration\FeatureSwitcher.AwsConfiguration.csproj">
       <Project>{8ED2124A-2666-402D-9BAC-582037D6514C}</Project>
       <Name>FeatureSwitcher.AwsConfiguration</Name>
     </ProjectReference>
