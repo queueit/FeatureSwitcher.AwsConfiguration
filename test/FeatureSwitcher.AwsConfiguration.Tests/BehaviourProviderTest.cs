@@ -14,16 +14,14 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
     {
         private object TestFeatureBooleanEnabled = new
         {
-            FeatureName = typeof (TestFeature1).FullName,
-            Type = typeof (BooleanBehaviour).FullName,
-            Value = new { BOOL = true }
+            type = typeof (BooleanBehaviour).FullName,
+            value = new { BOOL = true }
         };
 
         private object TestFeatureBooleanDisabled = new
         {
-            FeatureName = typeof(TestFeature1).FullName,
-            Type = typeof(BooleanBehaviour).FullName,
-            Value = new { BOOL = false }
+            type = typeof(BooleanBehaviour).FullName,
+            value = new { BOOL = false }
         };
 
         [Fact(Skip = "Integration test")]
@@ -204,7 +202,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         private Task<dynamic> GeneratedGetResponse(object config = null)
         {
             if (config == null)
-                config = new {FeatureName = "", Type = "", Value = ""};
+                config = new {type = "", value = ""};
 
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             var response = serializer.Serialize(config);
