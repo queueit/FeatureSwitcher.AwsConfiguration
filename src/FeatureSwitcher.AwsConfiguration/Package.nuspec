@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>FeatureSwitcher.Windsor</id>
+	  <title>AWS Configuration plugin for FeatureSwitcher</title>
+    <version>$version$</version>
+    <authors>Queue-it</authors>
+    <owners>Queue-it</owners>
+    <licenseUrl>https://github.com/queueit/FeatureSwitcher.AwsConfiguration/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/queueit/FeatureSwitcher.AwsConfiguration</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>AWS Configuration plugin for FeatureSwitcher</description>
+	  <tags>FeatureSwitcher FeatureToggle Configuration</tags>
+    <dependencies>
+      <dependency id="FeatureSwitcher" version="1.1.0" />
+    </dependencies>
+  </metadata>
+  <files>
+	  <file src="bin\$configuration$\FeatureSwitcher.AwsConfiguration.dll" target="lib\net45\" />
+  </files>
+</package>
