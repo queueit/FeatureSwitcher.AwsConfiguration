@@ -18,13 +18,44 @@ The stack have created 3 resources: A DynamoDB table, a Role and a Policy. Note 
 While we wait for CloudFormation support we have provided this step-by-step guide to setting up the API Gateway. There is also a Swagger definition [here](https://github.com/queueit/FeatureSwitcher.AwsConfiguration/blob/master/config/FeatureSwitcher.AwsConfiguration-test-swagger-integrations.json).
 
 - Go to the AWS Console -> API Gateway and create a new API.
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/1.PNG "Setup Step")
 - Create a new resource by the name 'feature'
+- Add a GET method on the feature resource
+- Add a PUP method on the feature resource
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/2.PNG "Setup Step")
+- Click the GET method and configure it as shown here. Select your Region (the same as where you created the CloudFormation stack) and put the Role Arn you created in through the CloudFormation stack. Note that you need the full Arn of the role which can be located in AIM -> Roles -> details of the created role.
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/3.PNG "Setup Step")
+- On the GET method, click "Method Request"
+- Expand "URL Query String Parameters"
+- Add the "FeatureName" parameter
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/4.PNG "Setup Step")
+- On the GET method, click "Integration Request"
+- Expand "Mapping Templates"
+- Add "application/json"
+- Enter the following as Mapping Template:
+````
+{
+    "ConsistentRead": false,
+    "Key": 
+        {
+            "FeatureName" :
+                {
+                    "S": "$input.params('FeatureName')"
+                }
+        },
+    "TableName": "FeatureSwitcherConfig"
+}
+```
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/5.PNG "Setup Step")
+- On the GET method, click "Integration Request"
+- Expand "Mapping Templates"
+- Add "application/json"
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/6.PNG "Setup Step")
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/7.PNG "Setup Step")
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/8.PNG "Setup Step")
