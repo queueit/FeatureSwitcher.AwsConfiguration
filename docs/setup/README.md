@@ -70,7 +70,7 @@ While we wait for CloudFormation support we have provided this step-by-step guid
    "value": $input.json('$.Item.Value')
 }
 ```
-- Hit Save
+- Hit the "check" button (next to the "Mapping template" headline and then Save
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/7.PNG "Setup Step")
 - Add a new integration response
@@ -87,7 +87,7 @@ While we wait for CloudFormation support we have provided this step-by-step guid
    "message": $input.json('$.Message')
 }
 ```
-- Hit Save
+- Hit the "check" button (next to the "Mapping template" headline and then Save
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/8.PNG "Setup Step")
 - Add a new integration response
@@ -106,7 +106,12 @@ While we wait for CloudFormation support we have provided this step-by-step guid
 ```
 - Hit the "check" button (next to the "Mapping template" headline and then Save
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/8-1.PNG "Setup Step")
+
+- Click the PUT method and configure it as shown here. Select your Region (the same as where you created the CloudFormation stack) and put the Role Arn you created in through the CloudFormation stack. Note that you need the full Arn of the role which can be located in AIM -> Roles -> details of the created role.
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/9.PNG "Setup Step")
+
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/10.PNG "Setup Step")
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/11.PNG "Setup Step")
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/12.PNG "Setup Step")
