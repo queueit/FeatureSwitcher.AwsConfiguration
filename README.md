@@ -6,6 +6,7 @@ This project consists of:
 - A highly available and fault tolerant backend based on AWS services. There is no code to deploy!
 
 [Setting up the AWS backend](https://github.com/queueit/FeatureSwitcher.AwsConfiguration/blob/master/docs/setup/README.md)
+[NuGet](https://www.nuget.org/packages/FeatureSwitcher.AwsConfiguration/)
 
 # Usage
 ```csharp
