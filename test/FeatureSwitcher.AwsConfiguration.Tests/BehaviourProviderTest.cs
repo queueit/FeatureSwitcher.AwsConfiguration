@@ -27,7 +27,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         [Fact(Skip = "Integration test")]
         public void BehaviourProvider_Setup_Integration_Test()
         {
-            var config = AwsConfig.Configure("https://b82jcihcsc.execute-api.eu-west-1.amazonaws.com/test");
+            var config = AwsConfig.Configure("https://[id].execute-api.[region].amazonaws.com/test");
 
             Features.Are.ConfiguredBy.Custom(config.IsEnabled);
 
@@ -37,7 +37,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         [Fact(Skip = "Integration test")]
         public async void BehaviourProvider_SetupAsync_Integration_Test()
         {
-            var configTask = AwsConfig.ConfigureAsync("https://b82jcihcsc.execute-api.eu-west-1.amazonaws.com/test");
+            var configTask = AwsConfig.ConfigureAsync("https://[id].execute-api.[region].amazonaws.com/test");
 
             // Do stuff
 
