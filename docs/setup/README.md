@@ -28,12 +28,12 @@ While we wait for CloudFormation support we have provided this step-by-step guid
 - Click the GET method and configure it as shown here. Select your Region (the same as where you created the CloudFormation stack) and put the Role Arn you created in through the CloudFormation stack. Note that you need the full Arn of the role which can be located in AIM -> Roles -> details of the created role.
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/3.PNG "Setup Step")
-- On the GET method, click "Method Request"
+- On the GET method, click Method Request
 - Expand "URL Query String Parameters"
 - Add the "FeatureName" parameter
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/4.PNG "Setup Step")
-- On the GET method, click "Integration Request"
+- On the GET method, click Integration Request
 - Expand "Mapping Templates"
 - Add "application/json"
 - Enter the following as Mapping Template:
@@ -52,13 +52,59 @@ While we wait for CloudFormation support we have provided this step-by-step guid
 ```
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/5.PNG "Setup Step")
-- On the GET method, click "Integration Request"
-- Expand "Mapping Templates"
-- Add "application/json"
+- On the GET method, click Method Response
+- Add "400"
+- Add "500"
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/6.PNG "Setup Step")
+- On the GET method, click Integration Response
+- Expand the existing response
+- Set HTTP status regex to "2\d{2}"
+- Expand "Mapping Templates"
+- Add "application/json"
+- Enter the following as Mapping Template:
+````
+#set($inputRoot = $input.path('$'))
+{
+   "type": "$inputRoot.Item.Type.S",
+   "value": $input.json('$.Item.Value')
+}
+```
+- Hit Save
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/7.PNG "Setup Step")
+- Add a new integration response
+- Set HTTP status regex to "4\d{2}"
+- Set Response status to "400"
+- Save
+- Expand "Mapping Templates"
+- Add "application/json"
+- Enter the following as Mapping Template:
+````
+#set($inputRoot = $input.path('$'))
+{
+   "type": $input.json('$.__type'),
+   "message": $input.json('$.Message')
+}
+```
+- Hit Save
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/8.PNG "Setup Step")
+- Add a new integration response
+- Set HTTP status regex to "5\d{2}"
+- Set Response status to "500"
+- Save
+- Expand "Mapping Templates"
+- Add "application/json"
+- Enter the following as Mapping Template:
+````
+#set($inputRoot = $input.path('$'))
+{
+   "type": $input.json('$.__type'),
+   "message": $input.json('$.Message')
+}
+```
+- Hit the "check" button (next to the "Mapping template" headline and then Save
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/8-1.PNG "Setup Step")
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/9.PNG "Setup Step")
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/10.PNG "Setup Step")
