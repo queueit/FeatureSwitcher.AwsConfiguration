@@ -211,4 +211,6 @@ While we wait for CloudFormation support we have provided this step-by-step guid
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/20.PNG "Setup Step")
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/21.PNG "Setup Step")
+- And you are done! take note of the Invoke Url which you will need when you configure the .Net client code.
+- 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/22.PNG "Setup Step")
