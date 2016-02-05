@@ -1,5 +1,11 @@
 # FeatureSwitcher.AwsConfiguration
-Configuration plugin for FeatureSwitcher based on AWS services. Feature configuration is stored in DynamoDB and made available through the API Gateway. 
+Configuration plugin for FeatureSwitcher based on AWS services. Feature configuration is stored in DynamoDB and made available through the API Gateway. Having the configuration allows you to switch/toggle features at runtime that will then be apllied to your application instances.
+
+This project consists of:
+- A .Net client library available through NuGet
+- A highly available and fault tolerant backend based on AWS services. There is no code to deploy!
+
+[Setting up the AWS backend](https://github.com/queueit/FeatureSwitcher.AwsConfiguration/blob/master/docs/setup/README.md)
 
 # Usage
 ```csharp
