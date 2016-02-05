@@ -121,7 +121,21 @@ While we wait for CloudFormation support we have provided this step-by-step guid
 - Add "application/json"
 - Enter the following as Mapping Template:
 ```
-{}
+{
+    "TableName": "FeatureSwitcherConfig",
+    "Item": {
+        "FeatureName": {
+            "S": "$input.params('FeatureName')"
+        },
+        "Type": {
+            "S": "FeatureSwitcher.AwsConfiguration.Behaviours.BooleanBehaviour"
+        },
+        "Value": {
+            "BOOL": false
+        }
+    },
+    "ConditionExpression": "attribute_not_exists (FeatureName)"
+}
 ```
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/11.PNG "Setup Step")
@@ -177,11 +191,24 @@ While we wait for CloudFormation support we have provided this step-by-step guid
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/15.PNG "Setup Step")
 
+- Verify all the settings are correct (The UI does not always work the way you would expect, and stuff is missing)
+- Click the PUT method -> Test
+- Enter "MyTestFeature" as FeatureName
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/16.PNG "Setup Step")
+- Verify that you get a 200 response code. If not expand Log to look for the error.
+- You can also look into the Dynamo table "FeatureSwitcherConfig" and verify that there is an entry for your feature
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/17.PNG "Setup Step")
+- Click the GET method -> Test
+- Enter "MyTestFeature" as FeatureName
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/18.PNG "Setup Step")
+- Verify that you get a 200 response code. If not expand Log to look for the error.
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/19.PNG "Setup Step")
+- Deploy the API to you environment
+
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/20.PNG "Setup Step")
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/21.PNG "Setup Step")
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/22.PNG "Setup Step")
