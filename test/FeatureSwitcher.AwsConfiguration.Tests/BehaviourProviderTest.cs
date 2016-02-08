@@ -198,6 +198,25 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             Assert.False(Feature<TestFeature1>.Is().Enabled);
         }
 
+        [Fact]
+        public void BehaviourProvider_Setup_CustomFactory_Test()
+        {
+            IRestClient restClient = MockRepository.GenerateMock<IRestClient>();
+            restClient.Stub(client => client.GetAsync(null)).IgnoreArguments()
+                .Return(GeneratedGetResponse(TestFeatureBooleanDisabled));
+            IBehaviourFactory behaviourFactory = MockRepository.GenerateMock<IBehaviourFactory>();
+            behaviourFactory.Stub(factory => factory.Create(null))
+                .IgnoreArguments()
+                .Throw(new TestBehaviourFactoryException());
+
+            Assert.Throws<TestBehaviourFactoryException>(() =>
+            {
+                var config = AwsConfig.Configure(
+                    "https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test",
+                    restClient,
+                    behaviourFactory: behaviourFactory);
+            });
+        }
 
         private Task<dynamic> GeneratedGetResponse(object config = null)
         {
@@ -208,5 +227,9 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             var response = serializer.Serialize(config);
             return Task.FromResult<dynamic>(serializer.Deserialize<dynamic>(response));
         }
+    }
+
+    public class TestBehaviourFactoryException : Exception
+    {
     }
 }

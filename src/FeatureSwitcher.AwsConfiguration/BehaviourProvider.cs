@@ -15,11 +15,17 @@ namespace FeatureSwitcher.AwsConfiguration
         private readonly string _apiEndpoint;
         private readonly IRestClient _restClient;
         private readonly TimeSpan _cacheTimeout;
+        private readonly IBehaviourFactory _behaviourFactory;
 
-        internal BehaviourProvider(string apiEndpoint, IRestClient restClient, TimeSpan cacheTimeout)
+        internal BehaviourProvider(
+            string apiEndpoint, 
+            IRestClient restClient, 
+            TimeSpan cacheTimeout, 
+            IBehaviourFactory behaviourFactory)
         {
             this._restClient = restClient;
-            _cacheTimeout = cacheTimeout;
+            this._cacheTimeout = cacheTimeout;
+            this._behaviourFactory = behaviourFactory ?? new DefaultBehaviourFactory();
             if (apiEndpoint == null)
                 throw new ArgumentNullException(apiEndpoint);
 
@@ -54,13 +60,6 @@ namespace FeatureSwitcher.AwsConfiguration
             }
 
             await Task.WhenAll(tasks);
-        }
-
-        private Type FindType(string fullName)
-        {
-            return AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(domain => domain.GetTypes())
-                .FirstOrDefault(type => type.FullName == fullName);
         }
 
         private Type[] FindAllFeatures()
@@ -112,21 +111,20 @@ namespace FeatureSwitcher.AwsConfiguration
 
         private void AddOrUpdateCache(string featureName, dynamic featureConfig)
         {
-            Type behaviourType = this.FindType(featureConfig["type"].ToString());
+            var featureBehaviour = this._behaviourFactory.Create(featureConfig["type"].ToString());
 
-            if (behaviourType != null)
+            if (featureBehaviour != null)
             {
-                var featureBehaviour = Activator.CreateInstance(behaviourType) as IBehaviour;
+                featureBehaviour.SetConfiguration(featureConfig["value"]);
 
-                if (featureBehaviour != null)
-                {
-                    featureBehaviour.SetConfiguration(featureConfig["value"]);
-
-                    _cache.AddOrUpdate(
-                        featureName,
-                        (key) => new BehaviourCacheItem(featureBehaviour, this._cacheTimeout),
-                        (key, value) => new BehaviourCacheItem(featureBehaviour, this._cacheTimeout));
-                }
+                _cache.AddOrUpdate(
+                    featureName,
+                    (key) => new BehaviourCacheItem(featureBehaviour, this._cacheTimeout),
+                    (key, value) =>
+                    {
+                        this._behaviourFactory.Release(value.Behaviour);
+                        return new BehaviourCacheItem(featureBehaviour, this._cacheTimeout);
+                    });
             }
         }
 

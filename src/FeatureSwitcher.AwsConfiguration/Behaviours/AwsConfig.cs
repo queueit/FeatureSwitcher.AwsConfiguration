@@ -19,49 +19,59 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
         }
 
         internal static async Task<AwsConfig> ConfigureAsync(
-            string apiEndpoint, IRestClient restClient, TimeSpan cacheTimeout = default(TimeSpan))
+            string apiEndpoint, 
+            IRestClient restClient, 
+            TimeSpan cacheTimeout = default(TimeSpan),
+            IBehaviourFactory behaviourFactory = null)
         {
-            AwsConfig config = new AwsConfig(apiEndpoint, restClient, cacheTimeout);
+            AwsConfig config = new AwsConfig(apiEndpoint, restClient, cacheTimeout, behaviourFactory);
             await config.BehaviourProvider.SetupAsync();
             return config;
         }
 
         public static async Task<AwsConfig> ConfigureAsync(
-            string apiEndpoint, TimeSpan cacheTimeout = default(TimeSpan))
+            string apiEndpoint, 
+            TimeSpan cacheTimeout = default(TimeSpan),
+            IBehaviourFactory behaviourFactory = null)
         {
-            AwsConfig config = new AwsConfig(apiEndpoint, cacheTimeout);
+            AwsConfig config = new AwsConfig(apiEndpoint, cacheTimeout, behaviourFactory);
             await config.BehaviourProvider.SetupAsync();
             return config;
         }
 
         internal static AwsConfig Configure(
-            string apiEndpoint, IRestClient restClient, TimeSpan cacheTimeout = default(TimeSpan))
+            string apiEndpoint, 
+            IRestClient restClient, 
+            TimeSpan cacheTimeout = default(TimeSpan),
+            IBehaviourFactory behaviourFactory = null)
         {
-            AwsConfig config = new AwsConfig(apiEndpoint, restClient, cacheTimeout);
+            AwsConfig config = new AwsConfig(apiEndpoint, restClient, cacheTimeout, behaviourFactory);
             config.BehaviourProvider.Setup();
             return config;
 
         }
 
         public static AwsConfig Configure(
-            string apiEndpoint, TimeSpan cacheTimeout = default(TimeSpan))
+            string apiEndpoint, 
+            TimeSpan cacheTimeout = default(TimeSpan),
+            IBehaviourFactory behaviourFactory = null)
         {
-            AwsConfig config = new AwsConfig(apiEndpoint, cacheTimeout);
+            AwsConfig config = new AwsConfig(apiEndpoint, cacheTimeout, behaviourFactory);
             config.BehaviourProvider.Setup();
             return config;
 
         }
 
-        private AwsConfig(string apiEndpoint, TimeSpan cacheTimeout)
-            : this(apiEndpoint, new RestClient(), cacheTimeout)
+        private AwsConfig(string apiEndpoint, TimeSpan cacheTimeout, IBehaviourFactory behaviourFactory)
+            : this(apiEndpoint, new RestClient(), cacheTimeout, behaviourFactory)
         {}
 
-        private AwsConfig(string apiEndpoint, IRestClient restClient, TimeSpan cacheTimeout)
+        private AwsConfig(string apiEndpoint, IRestClient restClient, TimeSpan cacheTimeout, IBehaviourFactory behaviourFactory)
         {
             if (cacheTimeout == default(TimeSpan))
                 cacheTimeout = TimeSpan.FromMinutes(5);
 
-            this.BehaviourProvider = new BehaviourProvider(apiEndpoint, restClient, cacheTimeout);
+            this.BehaviourProvider = new BehaviourProvider(apiEndpoint, restClient, cacheTimeout, behaviourFactory);
         }
     }
 }

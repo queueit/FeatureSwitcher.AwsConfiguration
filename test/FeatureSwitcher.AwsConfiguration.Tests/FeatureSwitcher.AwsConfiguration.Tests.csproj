@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Behaviours\BooleanBehaviourTest.cs" />
     <Compile Include="BehaviourProviderTest.cs" />
+    <Compile Include="Behaviours\InStringListBehaviourTest.cs" />
     <Compile Include="TestFeature.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

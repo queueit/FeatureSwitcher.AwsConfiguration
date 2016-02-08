@@ -51,7 +51,10 @@
     <Compile Include="Behaviours\BooleanBehaviour.cs" />
     <Compile Include="Behaviours\IBehaviour.cs" />
     <Compile Include="BehaviourProvider.cs" />
+    <Compile Include="Behaviours\InStringListBehaviour.cs" />
     <Compile Include="ConfigurationRequestException.cs" />
+    <Compile Include="DefaultBehaviourFactory.cs" />
+    <Compile Include="IBehaviourFactory.cs" />
     <Compile Include="IRestClient.cs" />
     <Compile Include="Models\BehaviourCacheItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
