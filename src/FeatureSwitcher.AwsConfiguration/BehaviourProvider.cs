@@ -70,7 +70,7 @@ namespace FeatureSwitcher.AwsConfiguration
                 .ToArray();
         }
 
-        private async Task LoadConfigFromService(string featureName)
+        private async Task LoadConfigFromService(string featureName, bool ignoreException = false)
         {
             SetFallbackBehaviour(featureName);
 
@@ -83,9 +83,10 @@ namespace FeatureSwitcher.AwsConfiguration
                 else
                     await CreateConfigurationEntry(featureName);
             }
-            catch (ConfigurationRequestException ex)
+            catch (Exception)
             {
-                throw ex;
+                if (!ignoreException)
+                    throw;
             }
         }
 
@@ -141,7 +142,7 @@ namespace FeatureSwitcher.AwsConfiguration
             _cache.AddOrUpdate(
                 featureName,
                 (name) => new BehaviourCacheItem(new BooleanBehaviour(false), this._cacheTimeout),
-                (name, behaviour) => new BehaviourCacheItem(new BooleanBehaviour(false), this._cacheTimeout));
+                (name, behaviour) => behaviour);
             return;
         }
 

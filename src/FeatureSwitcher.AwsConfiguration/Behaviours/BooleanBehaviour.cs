@@ -7,7 +7,7 @@ using Microsoft.CSharp.RuntimeBinder;
 
 namespace FeatureSwitcher.AwsConfiguration.Behaviours
 {
-    internal class BooleanBehaviour : IBehaviour
+    public class BooleanBehaviour : IBehaviour
     {
         private bool _boolValue = false;
 
