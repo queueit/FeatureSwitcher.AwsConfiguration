@@ -9,7 +9,7 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
 {
     public abstract class InStringListBehaviour : IBehaviour
     {
-        private Dictionary<string, object> _list = new Dictionary<string, object>();
+        private HashSet<string> _list = new HashSet<string>();
 
         public bool? Behaviour(Feature.Name name)
         {
@@ -33,18 +33,20 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
 
         protected bool IsInList(string value)
         {
-            return this._list.ContainsKey(value);
+            return this._list.Contains(value);
         }
 
         protected abstract bool IsInList();
 
-        private Dictionary<string, object> DeserializeList(dynamic configValue)
+        private HashSet<string> DeserializeList(dynamic configValue)
         { 
-            Dictionary<string, object> itemsInList = new Dictionary<string, object>();
+            HashSet<string> itemsInList = new HashSet<string>();
             var list = configValue["L"];
             for (int i = 0; i < list.Length; i++)
             {
-                itemsInList.Add(list[i]["S"] as string, null);
+                string value = list[i]["S"] as string;
+                if (!itemsInList.Contains(value))
+                    itemsInList.Add(value);
             }
 
             return itemsInList;

@@ -26,6 +26,21 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         }
 
         [Fact]
+        public void InStringListBehaviour_Deserialization_SameValueTwice_Test()
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            var data = serializer.Deserialize<dynamic>("{\"L\": [{\"S\": \"queueitprod\"},{\"S\": \"queueitprod\"}]}");
+
+            TestInStringListBehaviour inList = new TestInStringListBehaviour("queueitprod");
+            inList.SetConfiguration(data);
+
+            var enabled = inList.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
+
+            Assert.True(enabled);
+        }
+
+
+        [Fact]
         public void InStringListBehaviour_Deserialization_NotInList_Test()
         {
             JavaScriptSerializer serializer = new JavaScriptSerializer();
