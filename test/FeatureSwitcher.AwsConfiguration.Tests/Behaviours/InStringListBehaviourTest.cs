@@ -54,6 +54,20 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
             Assert.False(enabled);
         }
 
+        [Fact]
+        public void InStringListBehaviour_Deserialization_NullValue_Test()
+        {
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            var data = serializer.Deserialize<dynamic>("{\"L\": [{\"S\": \"queueitprod\"}]}");
+
+            TestInStringListBehaviour inList = new TestInStringListBehaviour(null);
+            inList.SetConfiguration(data);
+
+            var enabled = inList.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
+
+            Assert.False(enabled);
+        }
+
     }
 
     public class TestInStringListBehaviour : InStringListBehaviour

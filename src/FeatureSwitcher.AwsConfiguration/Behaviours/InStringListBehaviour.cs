@@ -33,6 +33,9 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
 
         protected bool IsInList(string value)
         {
+            if (value == null)
+                return false;
+
             return this._list.Contains(value);
         }
 
