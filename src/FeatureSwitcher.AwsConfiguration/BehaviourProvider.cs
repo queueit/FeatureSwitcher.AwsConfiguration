@@ -70,24 +70,16 @@ namespace FeatureSwitcher.AwsConfiguration
                 .ToArray();
         }
 
-        private async Task LoadConfigFromService(string featureName, bool ignoreException = false)
+        private async Task LoadConfigFromService(string featureName)
         {
             SetFallbackBehaviour(featureName);
 
-            try
-            {
                 var featureConfig = await GetConfigurationFromService(featureName);
 
                 if (FeatureConfigIsValid(featureConfig))
                     AddOrUpdateCache(featureName, featureConfig);
                 else
                     await CreateConfigurationEntry(featureName);
-            }
-            catch (Exception)
-            {
-                if (!ignoreException)
-                    throw;
-            }
         }
 
         private async Task<dynamic> GetConfigurationFromService(string featureName)
@@ -156,13 +148,29 @@ namespace FeatureSwitcher.AwsConfiguration
                     if (cacheItem.IsExpired)
                     {
                         cacheItem.ExtendCache();
-                        this.LoadConfigFromService(name.Value); // async fire and forget
+                        FireAndForgetLoadConfigFromService(name);
                     }
                 }
             }
 
             return cacheItem.Behaviour;
 
+        }
+
+        private void FireAndForgetLoadConfigFromService(Feature.Name name)
+        {
+            // async fire and forget
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await this.LoadConfigFromService(name.Value);
+                }
+                catch (Exception)
+                {
+                    // ignore 
+                }
+            }).ConfigureAwait(false);
         }
     }
 }
