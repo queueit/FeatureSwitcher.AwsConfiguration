@@ -22,7 +22,7 @@ While we wait for CloudFormation support we have provided this step-by-step guid
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/1.PNG "Setup Step")
 - Create a new resource by the name 'feature'
 - Add a GET method on the feature resource
-- Add a PUP method on the feature resource
+- Add a PUT method on the feature resource
 
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/2.PNG "Setup Step")
 - Click the GET method and configure it as shown here. Select your Region (the same as where you created the CloudFormation stack) and put the Role Arn you created in through the CloudFormation stack. Note that you need the full Arn of the role which can be located in AIM -> Roles -> details of the created role.
