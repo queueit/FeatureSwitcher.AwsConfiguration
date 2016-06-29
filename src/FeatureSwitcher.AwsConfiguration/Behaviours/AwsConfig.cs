@@ -25,7 +25,7 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
             IBehaviourFactory behaviourFactory = null)
         {
             AwsConfig config = new AwsConfig(apiEndpoint, restClient, cacheTimeout, behaviourFactory);
-            await config.BehaviourProvider.SetupAsync();
+            await config.BehaviourProvider.SetupAsync().ConfigureAwait(false);
             return config;
         }
 
@@ -35,7 +35,7 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
             IBehaviourFactory behaviourFactory = null)
         {
             AwsConfig config = new AwsConfig(apiEndpoint, cacheTimeout, behaviourFactory);
-            await config.BehaviourProvider.SetupAsync();
+            await config.BehaviourProvider.SetupAsync().ConfigureAwait(false);
             return config;
         }
 

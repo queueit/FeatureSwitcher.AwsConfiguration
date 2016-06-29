@@ -17,7 +17,7 @@ namespace FeatureSwitcher.AwsConfiguration
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                return await GetAsync(url, httpClient, 1);
+                return await GetAsync(url, httpClient, 1).ConfigureAwait(false);
             }
         }
 
@@ -25,7 +25,7 @@ namespace FeatureSwitcher.AwsConfiguration
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                return await PutAsync(url, data, httpClient, 1);
+                return await PutAsync(url, data, httpClient, 1).ConfigureAwait(false);
             }
         }
 
@@ -40,12 +40,13 @@ namespace FeatureSwitcher.AwsConfiguration
 
             try
             {
-                var response = await httpClient.PutAsync(
-                    url, 
-                    new StringContent(serializer.Serialize(data), Encoding.UTF8, "application/json"));
+                var response = await httpClient
+                    .PutAsync(
+                        url, 
+                        new StringContent(serializer.Serialize(data), Encoding.UTF8, "application/json"))
+                    .ConfigureAwait(false);
                 statusCode = response.StatusCode;
-                responseData = await response.Content.ReadAsStringAsync();
-
+                responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -54,8 +55,8 @@ namespace FeatureSwitcher.AwsConfiguration
 
                 if (retryCount <= 5)
                 {
-                    await Task.Delay(retryCount * 150);
-                    return await PutAsync(url, data, httpClient, ++retryCount);
+                    await Task.Delay(retryCount * 150).ConfigureAwait(false);
+                    return await PutAsync(url, data, httpClient, ++retryCount).ConfigureAwait(false);
                 }
 
                 throw new ConfigurationRequestException(response.StatusCode, responseData);
@@ -75,8 +76,8 @@ namespace FeatureSwitcher.AwsConfiguration
 
             try
             {
-                var response = await httpClient.GetAsync(url);
-                responseData = await response.Content.ReadAsStringAsync();
+                var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+                responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 statusCode = response.StatusCode;
 
                 if (response.IsSuccessStatusCode)
@@ -86,8 +87,8 @@ namespace FeatureSwitcher.AwsConfiguration
 
                 if (retryCount <= 5)
                 {
-                    await Task.Delay(retryCount * 150);
-                    return await GetAsync(url, httpClient, ++retryCount);
+                    await Task.Delay(retryCount * 150).ConfigureAwait(false);
+                    return await GetAsync(url, httpClient, ++retryCount).ConfigureAwait(false);
                 }
 
                 throw new ConfigurationRequestException(response.StatusCode, responseData);

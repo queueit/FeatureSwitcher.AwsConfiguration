@@ -48,7 +48,7 @@ namespace FeatureSwitcher.AwsConfiguration
             }
         }
 
-        public async Task SetupAsync()
+        public Task SetupAsync()
         {
             Type[] features = FindAllFeatures();
 
@@ -59,7 +59,7 @@ namespace FeatureSwitcher.AwsConfiguration
                 tasks.Add(LoadConfigFromService(feature.FullName));
             }
 
-            await Task.WhenAll(tasks);
+            return Task.WhenAll(tasks);
         }
 
         private Type[] FindAllFeatures()
@@ -74,19 +74,18 @@ namespace FeatureSwitcher.AwsConfiguration
         {
             SetFallbackBehaviour(featureName);
 
-                var featureConfig = await GetConfigurationFromService(featureName);
+                var featureConfig = await GetConfigurationFromService(featureName).ConfigureAwait(false);
 
                 if (FeatureConfigIsValid(featureConfig))
                     AddOrUpdateCache(featureName, featureConfig);
                 else
-                    await CreateConfigurationEntry(featureName);
+                    await CreateConfigurationEntry(featureName).ConfigureAwait(false);
         }
 
-        private async Task<dynamic> GetConfigurationFromService(string featureName)
+        private Task<dynamic> GetConfigurationFromService(string featureName)
         {
-            var featureConfig = await this._restClient
+            return this._restClient
                 .GetAsync(GetFeatureEndpoint(featureName));
-            return featureConfig;
         }
 
         private string GetFeatureEndpoint(string featureName)
@@ -97,9 +96,9 @@ namespace FeatureSwitcher.AwsConfiguration
                 featureName);
         }
 
-        private async Task<dynamic> CreateConfigurationEntry(string featureName)
+        private Task<dynamic> CreateConfigurationEntry(string featureName)
         {
-            return await this._restClient.PutAsync(GetFeatureEndpoint(featureName), null);
+            return this._restClient.PutAsync(GetFeatureEndpoint(featureName), null);
         }
 
         private void AddOrUpdateCache(string featureName, dynamic featureConfig)
@@ -160,17 +159,10 @@ namespace FeatureSwitcher.AwsConfiguration
         private void FireAndForgetLoadConfigFromService(Feature.Name name)
         {
             // async fire and forget
-            Task.Run(async () =>
+            Task.Run(() =>
             {
-                try
-                {
-                    await this.LoadConfigFromService(name.Value);
-                }
-                catch (Exception)
-                {
-                    // ignore 
-                }
-            }).ConfigureAwait(false);
+                this.LoadConfigFromService(name.Value);
+            });
         }
     }
 }
