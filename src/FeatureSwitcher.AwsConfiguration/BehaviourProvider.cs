@@ -159,10 +159,7 @@ namespace FeatureSwitcher.AwsConfiguration
         private void FireAndForgetLoadConfigFromService(Feature.Name name)
         {
             // async fire and forget
-            //Task.Run(() =>
-            //{
-            //    this.LoadConfigFromService(name.Value);
-            //});
+            var task = this.LoadConfigFromService(name.Value);
         }
     }
 }
