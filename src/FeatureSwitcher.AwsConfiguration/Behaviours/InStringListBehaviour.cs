@@ -21,7 +21,7 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
             {
                 this._list = this.DeserializeList(configValue);
             }
-            catch (RuntimeBinderException ex)
+            catch (RuntimeBinderException)
             {
                 // fallback to false;
             }
