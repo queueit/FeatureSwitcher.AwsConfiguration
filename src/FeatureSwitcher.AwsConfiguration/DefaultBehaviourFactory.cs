@@ -26,7 +26,7 @@ namespace FeatureSwitcher.AwsConfiguration
         private Type FindType(string fullName)
         {
             return AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(domain => domain.GetTypes())
+                .SelectMany(domain => domain.GetTypesSafely())
                 .FirstOrDefault(type => type.FullName == fullName);
         }
     }
