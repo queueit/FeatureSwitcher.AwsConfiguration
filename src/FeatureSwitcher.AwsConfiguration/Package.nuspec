@@ -15,7 +15,4 @@
       <dependency id="FeatureSwitcher" version="1.1.0" />
     </dependencies>
   </metadata>
-  <files>
-	  <file src="bin\$configuration$\FeatureSwitcher.AwsConfiguration.dll" target="lib\net45\" />
-  </files>
 </package>
