@@ -2,9 +2,10 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 using FeatureSwitcher.AwsConfiguration.Behaviours;
 using FeatureSwitcher.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Rhino.Mocks;
 using Xunit;
 
@@ -223,9 +224,8 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             if (config == null)
                 config = new {type = "", value = ""};
 
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            var response = serializer.Serialize(config);
-            return Task.FromResult<dynamic>(serializer.Deserialize<dynamic>(response));
+            var response = JsonConvert.SerializeObject(config);
+            return Task.FromResult<dynamic>(JObject.Parse(response));
         }
     }
 

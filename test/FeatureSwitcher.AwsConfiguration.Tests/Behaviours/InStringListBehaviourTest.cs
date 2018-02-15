@@ -1,5 +1,5 @@
-﻿using System.Web.Script.Serialization;
-using FeatureSwitcher.AwsConfiguration.Behaviours;
+﻿using FeatureSwitcher.AwsConfiguration.Behaviours;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
@@ -9,8 +9,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_InList_Test()
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            var data = serializer.Deserialize<dynamic>("{\"L\": [{\"S\": \"queueitprod\"}]}");
+            var data = JObject.Parse("{\"L\": [{\"S\": \"queueitprod\"}]}");
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("queueitprod");
             inList.SetConfiguration(data);
@@ -23,8 +22,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_SameValueTwice_Test()
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            var data = serializer.Deserialize<dynamic>("{\"L\": [{\"S\": \"queueitprod\"},{\"S\": \"queueitprod\"}]}");
+            var data = JObject.Parse("{\"L\": [{\"S\": \"queueitprod\"},{\"S\": \"queueitprod\"}]}");
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("queueitprod");
             inList.SetConfiguration(data);
@@ -38,8 +36,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_NotInList_Test()
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            var data = serializer.Deserialize<dynamic>("{\"L\": [{\"S\": \"queueitprod\"}]}");
+            var data = JObject.Parse("{\"L\": [{\"S\": \"queueitprod\"}]}");
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("mala");
             inList.SetConfiguration(data);
@@ -52,8 +49,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_NullValue_Test()
         {
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            var data = serializer.Deserialize<dynamic>("{\"L\": [{\"S\": \"queueitprod\"}]}");
+            var data = JObject.Parse("{\"L\": [{\"S\": \"queueitprod\"}]}");
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour(null);
             inList.SetConfiguration(data);

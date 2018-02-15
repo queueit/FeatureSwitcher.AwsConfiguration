@@ -41,9 +41,9 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
         { 
             HashSet<string> itemsInList = new HashSet<string>();
             var list = configValue["L"];
-            for (int i = 0; i < list.Length; i++)
+            for (int i = 0; i < list.Count; i++)
             {
-                string value = list[i]["S"] as string;
+                string value = list[i]["S"].ToString();
                 if (!itemsInList.Contains(value))
                     itemsInList.Add(value);
             }

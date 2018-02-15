@@ -121,7 +121,7 @@ namespace FeatureSwitcher.AwsConfiguration
         private static dynamic FeatureConfigIsValid(dynamic featureConfig)
         {
             return featureConfig != null && 
-                   !string.IsNullOrEmpty(featureConfig["type"]) && 
+                   !string.IsNullOrEmpty((string)featureConfig["type"]) && 
                    featureConfig["type"] != "\"\"" &&
                    featureConfig["value"] != null;
         }

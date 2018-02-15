@@ -3,7 +3,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FeatureSwitcher.AwsConfiguration
 {
@@ -32,21 +33,19 @@ namespace FeatureSwitcher.AwsConfiguration
             string responseData = null;
             HttpStatusCode? statusCode = null;
 
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-
             try
             {
                 var response = await httpClient
                     .PutAsync(
                         url, 
-                        new StringContent(serializer.Serialize(data), Encoding.UTF8, "application/json"))
+                        new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
                     .ConfigureAwait(false);
                 statusCode = response.StatusCode;
                 responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return responseData ?? serializer.Deserialize<dynamic>(responseData);
+                    return responseData;
                 }
 
                 if (retryCount <= 5)
@@ -68,8 +67,6 @@ namespace FeatureSwitcher.AwsConfiguration
             string responseData = null;
             HttpStatusCode? statusCode = null;
 
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-
             try
             {
                 var response = await httpClient.GetAsync(url).ConfigureAwait(false);
@@ -78,7 +75,7 @@ namespace FeatureSwitcher.AwsConfiguration
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return serializer.Deserialize<dynamic>(responseData);
+                    return JObject.Parse(responseData);
                 }
 
                 if (retryCount <= 5)
