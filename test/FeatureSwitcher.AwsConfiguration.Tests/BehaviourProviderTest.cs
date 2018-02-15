@@ -55,7 +55,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             IRestClient restClient = MockRepository.GenerateMock<IRestClient>();
             restClient.Stub(client => client.GetAsync(null)).IgnoreArguments()
                 .Return(GeneratedGetResponse());
-            restClient.Stub(client => client.PutAsync(null, null)).IgnoreArguments()
+            restClient.Stub(client => client.PutAsync(null)).IgnoreArguments()
                 .Return(Task.FromResult<dynamic>(null));
 
             var config = AwsConfig.Configure("https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", restClient);
@@ -70,7 +70,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             IRestClient restClient = MockRepository.GenerateMock<IRestClient>();
             restClient.Stub(client => client.GetAsync(null)).IgnoreArguments()
                 .Return(GeneratedGetResponse());
-            restClient.Stub(client => client.PutAsync(null, null)).IgnoreArguments()
+            restClient.Stub(client => client.PutAsync(null)).IgnoreArguments()
                 .Return(Task.FromResult<dynamic>(null));
 
             var config = AwsConfig.Configure("https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", restClient);
@@ -80,8 +80,8 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             Assert.True(Feature<TestFeature1>.Is().Disabled);
 
             restClient.AssertWasCalled(client => client.PutAsync(
-    "https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test/feature?FeatureName=FeatureSwitcher.AwsConfiguration.Tests.TestFeature1",
-    null));
+    "https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test/feature?FeatureName=FeatureSwitcher.AwsConfiguration.Tests.TestFeature1"
+    ));
 
         }
 
@@ -91,14 +91,14 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             IRestClient restClient = MockRepository.GenerateMock<IRestClient>();
             restClient.Stub(client => client.GetAsync(null)).IgnoreArguments()
                 .Return(GeneratedGetResponse());
-            restClient.Stub(client => client.PutAsync(null, null)).IgnoreArguments()
+            restClient.Stub(client => client.PutAsync(null)).IgnoreArguments()
                 .Return(Task.FromResult<dynamic>(null));
 
             var config = AwsConfig.Configure("https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", restClient);
 
             restClient.AssertWasCalled(client => client.PutAsync(
-                "https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test/feature?FeatureName=FeatureSwitcher.AwsConfiguration.Tests.TestFeature1",
-                null));
+                "https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test/feature?FeatureName=FeatureSwitcher.AwsConfiguration.Tests.TestFeature1"
+                ));
         }
 
         [Fact]

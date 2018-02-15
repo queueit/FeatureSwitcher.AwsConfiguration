@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace FeatureSwitcher.AwsConfiguration
@@ -18,17 +17,17 @@ namespace FeatureSwitcher.AwsConfiguration
             }
         }
 
-        public async Task<dynamic> PutAsync(string url, object data)
+        public async Task<dynamic> PutAsync(string url)
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                return await PutAsync(url, data, httpClient, 1).ConfigureAwait(false);
+                return await PutAsync(url, httpClient, 1).ConfigureAwait(false);
             }
         }
 
 
 
-        private async Task<dynamic> PutAsync(string url, object data, HttpClient httpClient, int retryCount)
+        private async Task<dynamic> PutAsync(string url, HttpClient httpClient, int retryCount)
         {
             string responseData = null;
             HttpStatusCode? statusCode = null;
@@ -38,7 +37,7 @@ namespace FeatureSwitcher.AwsConfiguration
                 var response = await httpClient
                     .PutAsync(
                         url, 
-                        new StringContent(JsonConvert.SerializeObject(data), Encoding.UTF8, "application/json"))
+                        new StringContent("", Encoding.UTF8, "application/json"))
                     .ConfigureAwait(false);
                 statusCode = response.StatusCode;
                 responseData = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -51,7 +50,7 @@ namespace FeatureSwitcher.AwsConfiguration
                 if (retryCount <= 5)
                 {
                     await Task.Delay(retryCount * 150).ConfigureAwait(false);
-                    return await PutAsync(url, data, httpClient, ++retryCount).ConfigureAwait(false);
+                    return await PutAsync(url, httpClient, ++retryCount).ConfigureAwait(false);
                 }
 
                 throw new ConfigurationRequestException(response.StatusCode, responseData);
