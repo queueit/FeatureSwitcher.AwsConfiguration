@@ -160,7 +160,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             });
         }
 
-        //[Fact]
+        [Fact(Skip = "Integration")]
         public void BehaviourProvider_CacheTimeout_Test()
         {
             IRestClient restClient = MockRepository.GenerateMock<IRestClient>();
