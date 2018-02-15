@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using FeatureSwitcher.AwsConfiguration.Behaviours;
+﻿using FeatureSwitcher.AwsConfiguration.Behaviours;
 
 namespace FeatureSwitcher.AwsConfiguration
 {
