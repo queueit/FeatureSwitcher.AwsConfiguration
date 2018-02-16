@@ -12,7 +12,7 @@
     <description>AWS Configuration plugin for FeatureSwitcher</description>
 	  <tags>FeatureSwitcher FeatureToggle Configuration</tags>
     <dependencies>
-      <dependency id="FeatureSwitcher" version="2.0.0" />
+      <dependency id="FeatureSwitcher" version="2.1.0" />
     </dependencies>
   </metadata>
   <files>
