@@ -8,7 +8,7 @@ The setup consist of 1 steps.
 
 ### Create the CloudFormation Stack
 The CloudFormation template is located [here](https://github.com/queueit/FeatureSwitcher.AwsConfiguration/blob/master/config/CloudFormation.template). Go to the AWS colsole -> CloudFormation -> CreateStack. Choose the file complete the guide. You can pick any name for the stack.
-- Install AWS SAM ![What is SAM?](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html)
+- Install AWS SAM [What is SAM?](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html)
 - Create deployment package: ```sam package --template-file CloudFormation.yaml --output-template-file package.template --region [REGION] --s3-bucket [S3PACKAGEBUCKET]```
 - Deploy pacakge: ```sam deploy --template-file package.template --region [REGION] --stack-name FeatureSwitcher --capabilities CAPABILITY_IAM  --parameter-overrides StageName=[APISTAGENAME]```
 
@@ -18,5 +18,5 @@ The stack have created the following resources:
 - API Gateway
 - API endpoint url in an EC2 System Parameter `/feature-switcher/api-endpoint-url`
 
-And you are done! take note of the Invoke Url which you will need when you configure the .Net client code.
+And you are done! take note of the Invoke Url which you will need when you configure the .Net client code. You can find it in the output of the CloudFormation stack, on the API stage, or in the EC2 system parameter store
 ![Setup Step](https://raw.githubusercontent.com/queueit/FeatureSwitcher.AwsConfiguration/master/docs/img/22.PNG "Setup Step")
