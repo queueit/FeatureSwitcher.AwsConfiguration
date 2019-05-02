@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatureSwitcher.AwsConfiguration", "src\FeatureSwitcher.AwsConfiguration\FeatureSwitcher.AwsConfiguration.csproj", "{8ED2124A-2666-402D-9BAC-582037D6514C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeatureSwitcher.AwsConfiguration", "src\FeatureSwitcher.AwsConfiguration\FeatureSwitcher.AwsConfiguration.csproj", "{8ED2124A-2666-402D-9BAC-582037D6514C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeatureSwitcher.AwsConfiguration.Tests", "test\FeatureSwitcher.AwsConfiguration.Tests\FeatureSwitcher.AwsConfiguration.Tests.csproj", "{4683DA04-DA67-4B4F-983F-531720DF9A6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeatureSwitcher.AwsConfiguration.Tests", "test\FeatureSwitcher.AwsConfiguration.Tests\FeatureSwitcher.AwsConfiguration.Tests.csproj", "{4683DA04-DA67-4B4F-983F-531720DF9A6B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{3AAC2504-3AC4-41BD-993D-4B38D76C8A9C}"
 	ProjectSection(SolutionItems) = preProject
-		config\CloudFormation.template = config\CloudFormation.template
+		config\CloudFormation.yaml = config\CloudFormation.yaml
 		config\FeatureSwitcher.AwsConfiguration-test-swagger-integrations.json = config\FeatureSwitcher.AwsConfiguration-test-swagger-integrations.json
 	EndProjectSection
 EndProject
@@ -30,5 +30,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {98EAA124-8881-493F-A75D-0313D4D6A3B6}
 	EndGlobalSection
 EndGlobal

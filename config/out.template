@@ -1,0 +1,204 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: FeatureSwitcher.AwsConfiguration
+Outputs:
+  FeatureSwitcherEndpointUrl:
+    Description: The URL of the feature switcher endpoint
+    Export:
+      Name: FeatureSwitcherEndpointUrl
+    Value:
+      Fn::Sub:
+      - https://${ApiId}.execute-api.${AWS::Region}.amazonaws.com/${StageName}
+      - ApiId:
+          Ref: FeatureSwitcherApi
+        StageName:
+          Ref: StageName
+Parameters:
+  StageName:
+    Default: E.g. test or prod
+    Description: The name of the API deployment stage
+    Type: String
+Resources:
+  DynamoConfigTable:
+    Properties:
+      AttributeDefinitions:
+      - AttributeName: FeatureName
+        AttributeType: S
+      KeySchema:
+      - AttributeName: FeatureName
+        KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: '10'
+        WriteCapacityUnits: '10'
+      TableName: FeatureSwitcherConfig
+    Type: AWS::DynamoDB::Table
+  FeatureSwitcherApi:
+    Properties:
+      DefinitionBody:
+        definitions:
+          Empty:
+            title: Empty Schema
+            type: object
+        info:
+          title: FeatureSwitcherAWSConfiguration
+        paths:
+          feature:
+            get:
+              consumes:
+              - application/json
+              parameters:
+              - in: query
+                name: FeatureName
+                required: false
+                type: string
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  schema:
+                    $ref: '#/definitions/Empty'
+                '400':
+                  description: 400 response
+                '500':
+                  description: 500 response
+              x-amazon-apigateway-integration:
+                credentials:
+                  Fn::GetAtt:
+                  - FeatureSwitcherRole
+                  - Arn
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: "{\r\n    \"ConsistentRead\": false,\r\n    \"\
+                    Key\": \r\n        {\r\n            \"FeatureName\" :\r\n    \
+                    \            {\r\n                    \"S\": \"$input.params('FeatureName')\"\
+                    \r\n                }\r\n        },\r\n    \"TableName\": \"FeatureSwitcherConfig\"\
+                    \r\n}"
+                responses:
+                  2\d{2}:
+                    responseTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\n{\n\
+                        \   \"type\": \"$inputRoot.Item.Type.S\",\n   \"value\": $input.json('$.Item.Value')\n\
+                        }"
+                    statusCode: '200'
+                  4\d{2}:
+                    responseTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\n{\n\
+                        \   \"type\": $input.json('$.__type'),\n   \"message\": $input.json('$.message')\n\
+                        }"
+                    statusCode: '400'
+                  5\d{2}:
+                    responseTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\n{\n\
+                        \   \"type\": $input.json('$.__type'),\n   \"message\": $input.json('$.message')\n\
+                        }"
+                    statusCode: '500'
+                type: aws
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:dynamodb:action/GetItem
+            put:
+              consumes:
+              - application/json
+              parameters:
+              - in: query
+                name: FeatureName
+                required: false
+                type: string
+              produces:
+              - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  schema:
+                    $ref: '#/definitions/Empty'
+                '400':
+                  description: 400 response
+                '500':
+                  description: 500 response
+              x-amazon-apigateway-integration:
+                credentials:
+                  Fn::GetAtt:
+                  - FeatureSwitcherRole
+                  - Arn
+                httpMethod: POST
+                passthroughBehavior: when_no_match
+                requestTemplates:
+                  application/json: "{\r\n    \"TableName\": \"FeatureSwitcherConfig\"\
+                    ,\r\n    \"Item\": {\r\n        \"FeatureName\": {\r\n       \
+                    \     \"S\": \"$input.params('FeatureName')\"\r\n        },\r\n\
+                    \        \"Type\": {\r\n            \"S\": \"FeatureSwitcher.AwsConfiguration.Behaviours.BooleanBehaviour\"\
+                    \r\n        },\r\n        \"Value\": {\r\n            \"BOOL\"\
+                    : false\r\n        }\r\n    },\r\n    \"ConditionExpression\"\
+                    : \"attribute_not_exists (FeatureName)\"\r\n}"
+                responses:
+                  2\d{2}:
+                    responseTemplates:
+                      application/json: '{}'
+                    statusCode: '200'
+                  4\d{2}:
+                    responseTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\n{\n\
+                        \   \"type\": $input.json('$.__type'),\n   \"message\": $input.json('$.message')\n\
+                        }"
+                    statusCode: '400'
+                  5\d{2}:
+                    responseTemplates:
+                      application/json: "#set($inputRoot = $input.path('$'))\n{\n\
+                        \   \"type\": $input.json('$.__type'),\n   \"message\": $input.json('$.message')\n\
+                        }"
+                    statusCode: '500'
+                type: aws
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:dynamodb:action/PutItem
+        swagger: 2.0
+      EndpointConfiguration: REGIONAL
+      StageName:
+        Ref: StageName
+    Type: AWS::Serverless::Api
+  FeatureSwitcherApiEndPointParameter:
+    Properties:
+      AllowedPattern: ^https://.*$
+      Description: Feature Switcher API Endpoint
+      Name: /feature-switcher/api-endpoint-url
+      Type: String
+      Value:
+        Fn::Sub:
+        - https://${ApiId}.execute-api.${AWS::Region}.amazonaws.com/${StageName}
+        - ApiId:
+            Ref: FeatureSwitcherApi
+          StageName:
+            Ref: StageName
+    Type: AWS::SSM::Parameter
+  FeatureSwitcherPolicy:
+    Properties:
+      Description: FeatureSwitcher.AwsConfiguration
+      PolicyDocument:
+        Statement:
+        - Action:
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          Effect: Allow
+          Resource:
+          - Fn::Join:
+            - ':'
+            - - arn:aws:dynamodb
+              - Ref: AWS::Region
+              - '*'
+              - table/FeatureSwitcherConfig
+          Sid: FeatureSwitcherGetAndPutConfig
+        Version: '2012-10-17'
+    Type: AWS::IAM::ManagedPolicy
+  FeatureSwitcherRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: apigateway.amazonaws.com
+        Version: '2012-10-17'
+      ManagedPolicyArns:
+      - Ref: FeatureSwitcherPolicy
+      Path: /
+    Type: AWS::IAM::Role
+Transform: AWS::Serverless-2016-10-31
