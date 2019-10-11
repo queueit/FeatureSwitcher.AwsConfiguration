@@ -6,7 +6,7 @@ namespace FeatureSwitcher.AwsConfiguration.Models
     internal class BehaviourCacheItem
     {
         public IBehaviour Behaviour { get; }
-        public DateTime CacheTimeout { get; }
+        public DateTime CacheTimeout { get; private set; }
 
         public bool IsExpired => this.CacheTimeout < DateTime.UtcNow;
 
@@ -18,7 +18,7 @@ namespace FeatureSwitcher.AwsConfiguration.Models
 
         public void ExtendCache()
         {
-            CacheTimeout.Add(TimeSpan.FromMinutes(1));
+            CacheTimeout = CacheTimeout.Add(TimeSpan.FromMinutes(1));
         }
     }
 }
