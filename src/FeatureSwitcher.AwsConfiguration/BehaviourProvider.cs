@@ -72,12 +72,12 @@ namespace FeatureSwitcher.AwsConfiguration
         {
             SetFallbackBehaviour(featureName);
 
-                var featureConfig = await GetConfigurationFromService(featureName).ConfigureAwait(false);
+            var featureConfig = await GetConfigurationFromService(featureName).ConfigureAwait(false);
 
-                if (FeatureConfigIsValid(featureConfig))
-                    AddOrUpdateCache(featureName, featureConfig);
-                else
-                    await CreateConfigurationEntry(featureName).ConfigureAwait(false);
+            if (FeatureConfigIsValid(featureConfig))
+                AddOrUpdateCache(featureName, featureConfig);
+            else
+                await CreateConfigurationEntry(featureName).ConfigureAwait(false);
         }
 
         private Task<dynamic> GetConfigurationFromService(string featureName)
