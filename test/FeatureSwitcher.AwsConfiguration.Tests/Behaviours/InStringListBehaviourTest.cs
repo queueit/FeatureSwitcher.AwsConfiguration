@@ -1,5 +1,4 @@
 ﻿using FeatureSwitcher.AwsConfiguration.Behaviours;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
@@ -9,7 +8,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_InList_Test()
         {
-            var data = JObject.Parse("{\"L\": [{\"S\": \"queueitprod\"}]}");
+            var data = ConstructFeatureConfig.Execute("{\"L\": [{\"S\": \"queueitprod\"}]}");
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("queueitprod");
             inList.SetConfiguration(data);
@@ -22,7 +21,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_SameValueTwice_Test()
         {
-            var data = JObject.Parse("{\"L\": [{\"S\": \"queueitprod\"},{\"S\": \"queueitprod\"}]}");
+            var data = ConstructFeatureConfig.Execute("{\"L\": [{\"S\": \"queueitprod\"},{\"S\": \"queueitprod\"}]}");
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("queueitprod");
             inList.SetConfiguration(data);
@@ -36,7 +35,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_NotInList_Test()
         {
-            var data = JObject.Parse("{\"L\": [{\"S\": \"queueitprod\"}]}");
+            var data = ConstructFeatureConfig.Execute("{\"L\": [{\"S\": \"queueitprod\"}]}");
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("mala");
             inList.SetConfiguration(data);
@@ -49,7 +48,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_NullValue_Test()
         {
-            var data = JObject.Parse("{\"L\": [{\"S\": \"queueitprod\"}]}");
+            var data = ConstructFeatureConfig.Execute("{\"L\": [{\"S\": \"queueitprod\"}]}");
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour(null);
             inList.SetConfiguration(data);

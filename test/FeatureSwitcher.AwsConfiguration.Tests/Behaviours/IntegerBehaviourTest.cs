@@ -1,5 +1,4 @@
 ﻿using FeatureSwitcher.AwsConfiguration.Behaviours;
-using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
@@ -9,7 +8,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void IntegerBehaviour_Deserialization_SameValue_Test()
         {
-            var data = JObject.Parse("{\"N\": \"45\"}");
+            var data = ConstructFeatureConfig.Execute("{\"N\": \"45\"}");
 
             var inList = new TestIntegerBehaviour(45);
             inList.SetConfiguration(data);
@@ -22,7 +21,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void IntegerBehaviour_Deserialization_OtherValue_Test()
         {
-            var data = JObject.Parse("{\"N\": \"37\"}");
+            var data = ConstructFeatureConfig.Execute("{\"N\": \"37\"}");
 
             var inList = new TestIntegerBehaviour(45);
             inList.SetConfiguration(data);
@@ -35,7 +34,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void IntegerBehaviour_Deserialization_InvalidValue_Test()
         {
-            var data = JObject.Parse("{\"S\": \"Invalid\"}");
+            var data = ConstructFeatureConfig.Execute("{\"S\": \"Invalid\"}");
 
             var inList = new TestIntegerBehaviour(45);
             inList.SetConfiguration(data);
