@@ -4,8 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FeatureSwitcher.AwsConfiguration.Behaviours;
 using FeatureSwitcher.Configuration;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Xunit;
@@ -14,17 +12,10 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
 {
     public class BehaviourProviderTest
     {
-        private object TestFeatureBooleanEnabled = new
-        {
-            type = typeof (BooleanBehaviour).FullName,
-            value = new { BOOL = true }
-        };
+        private string TestFeatureBooleanEnabled = @"{""type"":""FeatureSwitcher.AwsConfiguration.Behaviours.BooleanBehaviour"",""value"":{""BOOL"":true}}";
+        private string TestFeatureBooleanDisabled = @"{""type"":""FeatureSwitcher.AwsConfiguration.Behaviours.BooleanBehaviour"",""value"":{""BOOL"":false}}";
 
-        private object TestFeatureBooleanDisabled = new
-        {
-            type = typeof(BooleanBehaviour).FullName,
-            value = new { BOOL = false }
-        };
+        private string EmptyResponse = @"{""type"":"""",""value"":""""}";
 
         [Fact(Skip = "Integration test")]
         public void BehaviourProvider_Setup_Integration_Test()
@@ -55,7 +46,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         {
             IRestClient restClient = Substitute.For<IRestClient>();
             restClient.GetAsync(null)
-                .ReturnsForAnyArgs(GeneratedGetResponse());
+                .ReturnsForAnyArgs(GeneratedGetResponse(EmptyResponse));
 
             var config = AwsConfig.Configure("https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", restClient);
 
@@ -68,7 +59,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         {
             IRestClient restClient = Substitute.For<IRestClient>();
             restClient.GetAsync(null)
-                .ReturnsForAnyArgs(GeneratedGetResponse());
+                .ReturnsForAnyArgs(GeneratedGetResponse(EmptyResponse));
 
             var config = AwsConfig.Configure("https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", restClient);
 
@@ -87,7 +78,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         {
             IRestClient restClient = Substitute.For<IRestClient>();
             restClient.GetAsync(null)
-                .ReturnsForAnyArgs(GeneratedGetResponse());
+                .ReturnsForAnyArgs(GeneratedGetResponse(EmptyResponse));
 
             var config = AwsConfig.Configure("https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", restClient);
 
@@ -208,13 +199,9 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             });
         }
 
-        private Task<string> GeneratedGetResponse(object config = null)
+        private Task<string> GeneratedGetResponse(string config)
         {
-            if (config == null)
-                config = new {type = "", value = ""};
-
-            var response = JsonConvert.SerializeObject(config);
-            return Task.FromResult(response);
+            return Task.FromResult(config);
         }
     }
 
