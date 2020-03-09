@@ -17,7 +17,7 @@ namespace FeatureSwitcher.AwsConfiguration
             }
         }
 
-        public async Task<dynamic> PutAsync(string url)
+        public async Task<string> PutAsync(string url)
         {
             using (HttpClient httpClient = new HttpClient())
             {
@@ -27,7 +27,7 @@ namespace FeatureSwitcher.AwsConfiguration
 
 
 
-        private async Task<dynamic> PutAsync(string url, HttpClient httpClient, int retryCount)
+        private async Task<string> PutAsync(string url, HttpClient httpClient, int retryCount)
         {
             string responseData = null;
             HttpStatusCode? statusCode = null;

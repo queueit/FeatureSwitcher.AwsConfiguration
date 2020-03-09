@@ -55,8 +55,6 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             IRestClient restClient = Substitute.For<IRestClient>();
             restClient.GetAsync(null)
                 .ReturnsForAnyArgs(GeneratedGetResponse());
-            restClient.PutAsync(null)
-                .ReturnsForAnyArgs(Task.FromResult<dynamic>(null));
 
             var config = AwsConfig.Configure("https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", restClient);
 
@@ -70,8 +68,6 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             IRestClient restClient = Substitute.For<IRestClient>();
             restClient.GetAsync(null)
                 .ReturnsForAnyArgs(GeneratedGetResponse());
-            restClient.PutAsync(null)
-                .ReturnsForAnyArgs(Task.FromResult<dynamic>(null));
 
             var config = AwsConfig.Configure("https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", restClient);
 
@@ -91,8 +87,6 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             IRestClient restClient = Substitute.For<IRestClient>();
             restClient.GetAsync(null)
                 .ReturnsForAnyArgs(GeneratedGetResponse());
-            restClient.PutAsync(null)
-                .ReturnsForAnyArgs(Task.FromResult<dynamic>(null));
 
             var config = AwsConfig.Configure("https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test", restClient);
 
