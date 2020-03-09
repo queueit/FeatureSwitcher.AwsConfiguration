@@ -94,9 +94,9 @@ namespace FeatureSwitcher.AwsConfiguration
                 featureName);
         }
 
-        private Task<dynamic> CreateConfigurationEntry(string featureName)
+        private async Task CreateConfigurationEntry(string featureName)
         {
-            return this._restClient.PutAsync(GetFeatureEndpoint(featureName));
+            await this._restClient.PutAsync(GetFeatureEndpoint(featureName)).ConfigureAwait(false);
         }
 
         private void AddOrUpdateCache(string featureName, dynamic featureConfig)
