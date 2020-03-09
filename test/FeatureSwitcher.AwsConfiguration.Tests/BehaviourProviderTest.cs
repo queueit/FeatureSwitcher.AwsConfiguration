@@ -7,6 +7,7 @@ using FeatureSwitcher.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using Xunit;
 
 namespace FeatureSwitcher.AwsConfiguration.Tests
@@ -128,7 +129,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         {
             IRestClient restClient = Substitute.For<IRestClient>();
             restClient.GetAsync(null)
-                .ReturnsForAnyArgs(x => throw new ConfigurationRequestException(HttpStatusCode.InternalServerError, null, null));
+                .ThrowsForAnyArgs(new ConfigurationRequestException(HttpStatusCode.InternalServerError, null, null));
 
             Exception ex = Assert.Throws<ConfigurationRequestException>(() =>
             {
@@ -143,7 +144,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
         {
             IRestClient restClient = Substitute.For<IRestClient>();
             restClient.GetAsync(null)
-                .ReturnsForAnyArgs(x => throw new ConfigurationRequestException(HttpStatusCode.InternalServerError, null, null));
+                .ThrowsForAnyArgs(new ConfigurationRequestException(HttpStatusCode.InternalServerError, null, null));
 
             var config = AwsConfig.ConfigureAsync(
                 "https://j3453jfdkh43.execute-api.eu-west-1.amazonaws.com/test",
@@ -207,13 +208,13 @@ namespace FeatureSwitcher.AwsConfiguration.Tests
             });
         }
 
-        private Task<dynamic> GeneratedGetResponse(object config = null)
+        private Task<string> GeneratedGetResponse(object config = null)
         {
             if (config == null)
                 config = new {type = "", value = ""};
 
             var response = JsonConvert.SerializeObject(config);
-            return Task.FromResult<dynamic>(JObject.Parse(response));
+            return Task.FromResult(response);
         }
     }
 
