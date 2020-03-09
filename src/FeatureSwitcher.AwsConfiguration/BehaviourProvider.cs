@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FeatureSwitcher.AwsConfiguration.Behaviours;
 using FeatureSwitcher.AwsConfiguration.Models;
+using Newtonsoft.Json.Linq;
 
 namespace FeatureSwitcher.AwsConfiguration
 {
@@ -72,7 +73,8 @@ namespace FeatureSwitcher.AwsConfiguration
         {
             SetFallbackBehaviour(featureName);
 
-            var featureConfig = await GetConfigurationFromService(featureName).ConfigureAwait(false);
+            var response = await GetConfigurationFromService(featureName).ConfigureAwait(false);
+            var featureConfig = ConstructFeatureConfig(response);
 
             if (FeatureConfigIsValid(featureConfig))
                 AddOrUpdateCache(featureName, featureConfig);
@@ -80,7 +82,7 @@ namespace FeatureSwitcher.AwsConfiguration
                 await CreateConfigurationEntry(featureName).ConfigureAwait(false);
         }
 
-        private Task<dynamic> GetConfigurationFromService(string featureName)
+        private Task<string> GetConfigurationFromService(string featureName)
         {
             return this._restClient
                 .GetAsync(GetFeatureEndpoint(featureName));
@@ -124,6 +126,11 @@ namespace FeatureSwitcher.AwsConfiguration
                    !string.IsNullOrEmpty((string)featureConfig["type"]) && 
                    featureConfig["type"] != "\"\"" &&
                    featureConfig["value"] != null;
+        }
+
+        private dynamic ConstructFeatureConfig(string response)
+        {
+            return JObject.Parse(response);
         }
 
         private void SetFallbackBehaviour(string featureName)

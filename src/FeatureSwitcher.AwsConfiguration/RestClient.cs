@@ -3,13 +3,12 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 
 namespace FeatureSwitcher.AwsConfiguration
 {
     internal class RestClient : IRestClient
     {
-        public async Task<dynamic> GetAsync(string url)
+        public async Task<string> GetAsync(string url)
         {
             using (HttpClient httpClient = new HttpClient())
             {
@@ -61,7 +60,7 @@ namespace FeatureSwitcher.AwsConfiguration
             }
         }
 
-        private static async Task<dynamic> GetAsync(string url, HttpClient httpClient, int retryCount)
+        private static async Task<string> GetAsync(string url, HttpClient httpClient, int retryCount)
         {
             string responseData = null;
             HttpStatusCode? statusCode = null;
@@ -74,7 +73,7 @@ namespace FeatureSwitcher.AwsConfiguration
 
                 if (response.IsSuccessStatusCode)
                 {
-                    return JObject.Parse(responseData);
+                    return responseData;
                 }
 
                 if (retryCount <= 5)
