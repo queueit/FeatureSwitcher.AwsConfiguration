@@ -119,7 +119,7 @@ namespace FeatureSwitcher.AwsConfiguration
             }
         }
 
-        private static dynamic FeatureConfigIsValid(dynamic featureConfig)
+        private static bool FeatureConfigIsValid(dynamic featureConfig)
         {
             return featureConfig != null && 
                    !string.IsNullOrEmpty((string)featureConfig["type"]) && 
