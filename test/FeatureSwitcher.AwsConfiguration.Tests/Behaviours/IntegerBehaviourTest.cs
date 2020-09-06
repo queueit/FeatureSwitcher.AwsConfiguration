@@ -13,7 +13,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
             var data = ConstructFeatureConfig.Execute(IntegerBehaviourTemplate.Replace("INPUT", "{\"N\": \"45\"}"));
 
             var inList = new TestIntegerBehaviour(45);
-            inList.SetConfiguration(data["value"]);
+            inList.SetConfiguration(data.GetValue());
 
             var enabled = inList.Behaviour(new Feature.Name(typeof (TestFeature1), typeof (TestFeature1).FullName));
 
@@ -26,7 +26,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
             var data = ConstructFeatureConfig.Execute(IntegerBehaviourTemplate.Replace("INPUT", "{\"N\": \"37\"}"));
 
             var inList = new TestIntegerBehaviour(45);
-            inList.SetConfiguration(data["value"]);
+            inList.SetConfiguration(data.GetValue());
 
             var enabled = inList.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
@@ -39,7 +39,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
             var data = ConstructFeatureConfig.Execute(IntegerBehaviourTemplate.Replace("INPUT", "{\"S\": \"Invalid\"}"));
 
             var inList = new TestIntegerBehaviour(45);
-            inList.SetConfiguration(data["value"]);
+            inList.SetConfiguration(data.GetValue());
 
             var enabled = inList.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 

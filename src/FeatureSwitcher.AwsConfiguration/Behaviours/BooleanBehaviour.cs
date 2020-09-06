@@ -1,4 +1,5 @@
-﻿using Microsoft.CSharp.RuntimeBinder;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FeatureSwitcher.AwsConfiguration.Behaviours
 {
@@ -21,9 +22,10 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
 
             try
             {
-                this._boolValue = configValue["BOOL"];
+                var value = (BooleanBehaviourValueDto)JsonSerializer.Deserialize<BooleanBehaviourValueDto>(configValue);
+                this._boolValue = value.Value;
             }
-            catch (RuntimeBinderException)
+            catch (JsonException)
             {
                 // fallback to false;
             }
@@ -34,4 +36,11 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
             return this._boolValue;
         }
     }
+
+    public class BooleanBehaviourValueDto
+    {
+        [JsonPropertyName("BOOL")]
+        public bool Value { get; set; }
+    }
+
 }

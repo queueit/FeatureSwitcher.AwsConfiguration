@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
-using Microsoft.CSharp.RuntimeBinder;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FeatureSwitcher.AwsConfiguration.Behaviours
 {
@@ -19,9 +21,14 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
 
             try
             {
-                this._list = this.DeserializeList(configValue);
+                var value = (InStringListBehaviourValueDto)JsonSerializer.Deserialize<InStringListBehaviourValueDto>(configValue);
+                if (value.DynamoDBStringList == null)
+                {
+                    return; // fallback to false;
+                }
+                _list = new HashSet<string>(value.DynamoDBStringList.Select(x => x.Value));
             }
-            catch (RuntimeBinderException)
+            catch (JsonException)
             {
                 // fallback to false;
             }
@@ -36,19 +43,17 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
         }
 
         protected abstract bool IsInList();
+    }
 
-        private HashSet<string> DeserializeList(dynamic configValue)
-        { 
-            HashSet<string> itemsInList = new HashSet<string>();
-            var list = configValue["L"];
-            for (int i = 0; i < list.Count; i++)
-            {
-                string value = list[i]["S"].ToString();
-                if (!itemsInList.Contains(value))
-                    itemsInList.Add(value);
-            }
+    public class InStringListBehaviourValueDto
+    {
+        [JsonPropertyName("L")]
+        public DynamoDBStringList[] DynamoDBStringList { get; set; }
+    }
 
-            return itemsInList;
-        }
+    public class DynamoDBStringList
+    {
+        [JsonPropertyName("S")]
+        public string Value { get; set; }
     }
 }

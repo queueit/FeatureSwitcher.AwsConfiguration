@@ -23,7 +23,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
             var data = ConstructFeatureConfig.Execute(BooleanBehaviourTemplate.Replace("INPUT", "{\"BOOL\": false}"));
 
             BooleanBehaviour boolean = new BooleanBehaviour();
-            boolean.SetConfiguration(data["value"]);
+            boolean.SetConfiguration(data.GetValue());
             var enabled = boolean.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
             Assert.False(enabled);
@@ -35,7 +35,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
             var data = ConstructFeatureConfig.Execute(BooleanBehaviourTemplate.Replace("INPUT", "{\"BOOL\": true}"));
 
             BooleanBehaviour boolean = new BooleanBehaviour();
-            boolean.SetConfiguration(data["value"]);
+            boolean.SetConfiguration(data.GetValue());
             var enabled = boolean.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
             Assert.True(enabled);

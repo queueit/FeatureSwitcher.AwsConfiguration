@@ -1,4 +1,5 @@
-﻿using Microsoft.CSharp.RuntimeBinder;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FeatureSwitcher.AwsConfiguration.Behaviours
 {
@@ -21,9 +22,15 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
 
             try
             {
-                ConfiguredValue = configValue["N"];
+                var value = (IntegerBehaviourValueDto)JsonSerializer.Deserialize<IntegerBehaviourValueDto>(configValue);
+                if (value.Value == null)
+                {
+                    return; // fallback to 0;
+                }
+
+                ConfiguredValue = int.Parse(value.Value);
             }
-            catch (RuntimeBinderException)
+            catch (JsonException)
             {
                 // fallback to 0;
             }
@@ -35,5 +42,11 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
         }
 
         protected abstract bool IsEnabled();
+    }
+
+    public class IntegerBehaviourValueDto
+    {
+        [JsonPropertyName("N")]
+        public string Value { get; set; }
     }
 }

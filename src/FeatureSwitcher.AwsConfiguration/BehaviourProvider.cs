@@ -100,13 +100,13 @@ namespace FeatureSwitcher.AwsConfiguration
             await this._restClient.PutAsync(GetFeatureEndpoint(featureName)).ConfigureAwait(false);
         }
 
-        private void AddOrUpdateCache(string featureName, dynamic featureConfig)
+        private void AddOrUpdateCache(string featureName, BaseFeatureConfigDto featureConfig)
         {
-            var featureBehaviour = this._behaviourFactory.Create(featureConfig["type"].ToString());
+            var featureBehaviour = this._behaviourFactory.Create(featureConfig.Type);
 
             if (featureBehaviour != null)
             {
-                featureBehaviour.SetConfiguration(featureConfig["value"]);
+                featureBehaviour.SetConfiguration(featureConfig.GetValue());
 
                 _cache.AddOrUpdate(
                     featureName,
@@ -119,12 +119,12 @@ namespace FeatureSwitcher.AwsConfiguration
             }
         }
 
-        private static bool FeatureConfigIsValid(dynamic featureConfig)
+        private static bool FeatureConfigIsValid(BaseFeatureConfigDto featureConfig)
         {
             return featureConfig != null && 
-                   !string.IsNullOrEmpty((string)featureConfig["type"]) && 
-                   featureConfig["type"] != "\"\"" &&
-                   featureConfig["value"] != null;
+                   !string.IsNullOrEmpty(featureConfig.Type) && 
+                   featureConfig.Type != "\"\"" &&
+                   featureConfig.GetValue() != null;
         }
 
         private void SetFallbackBehaviour(string featureName)

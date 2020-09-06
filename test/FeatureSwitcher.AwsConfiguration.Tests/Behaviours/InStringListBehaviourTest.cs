@@ -13,7 +13,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
             var data = ConstructFeatureConfig.Execute(InStringListTemplate.Replace("INPUT", "{\"L\": [{\"S\": \"queueitprod\"}]}"));
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("queueitprod");
-            inList.SetConfiguration(data["value"]);
+            inList.SetConfiguration(data.GetValue());
 
             var enabled = inList.Behaviour(new Feature.Name(typeof (TestFeature1), typeof (TestFeature1).FullName));
 
@@ -26,7 +26,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
             var data = ConstructFeatureConfig.Execute(InStringListTemplate.Replace("INPUT", "{\"L\": [{\"S\": \"queueitprod\"},{\"S\": \"queueitprod\"}]}"));
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("queueitprod");
-            inList.SetConfiguration(data["value"]);
+            inList.SetConfiguration(data.GetValue());
 
             var enabled = inList.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
@@ -40,7 +40,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
             var data = ConstructFeatureConfig.Execute(InStringListTemplate.Replace("INPUT", "{\"L\": [{\"S\": \"queueitprod\"}]}"));
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("mala");
-            inList.SetConfiguration(data.value["value"]);
+            inList.SetConfiguration(data.GetValue());
 
             var enabled = inList.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
@@ -53,7 +53,7 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
             var data = ConstructFeatureConfig.Execute(InStringListTemplate.Replace("INPUT", "{\"L\": [{\"S\": \"queueitprod\"}]}"));
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour(null);
-            inList.SetConfiguration(data.value["value"]);
+            inList.SetConfiguration(data.GetValue());
 
             var enabled = inList.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
