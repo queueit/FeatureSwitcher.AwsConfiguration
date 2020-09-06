@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using FeatureSwitcher.AwsConfiguration.Behaviours;
+﻿using FeatureSwitcher.AwsConfiguration.Behaviours;
 using Xunit;
 
 namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
 {
     public class BooleanBehaviourTest
     {
+        private string BooleanBehaviourTemplate = @"{""type"":""FeatureSwitcher.AwsConfiguration.Behaviours.InCustomerListBehaviour"",""value"":INPUT}";
+
         [Fact]
         public void BooleanBehaviour_NoLoadedConfiguration_False_Test()
         {
@@ -19,8 +20,10 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void BooleanBehaviour_SetConfiguration_False_Test()
         {
+            var data = ConstructFeatureConfig.Execute(BooleanBehaviourTemplate.Replace("INPUT", "{\"BOOL\": false}"));
+
             BooleanBehaviour boolean = new BooleanBehaviour();
-            boolean.SetConfiguration(new Dictionary<string, bool> { { "BOOL", false } });
+            boolean.SetConfiguration(data["value"]);
             var enabled = boolean.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
             Assert.False(enabled);
@@ -29,8 +32,10 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void BooleanBehaviour_SetConfiguration_True_Test()
         {
+            var data = ConstructFeatureConfig.Execute(BooleanBehaviourTemplate.Replace("INPUT", "{\"BOOL\": true}"));
+
             BooleanBehaviour boolean = new BooleanBehaviour();
-            boolean.SetConfiguration(new Dictionary<string, bool> { { "BOOL", true }});
+            boolean.SetConfiguration(data["value"]);
             var enabled = boolean.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
             Assert.True(enabled);

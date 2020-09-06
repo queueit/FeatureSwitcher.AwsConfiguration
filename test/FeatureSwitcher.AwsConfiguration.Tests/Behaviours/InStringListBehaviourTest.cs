@@ -5,13 +5,15 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
 {
     public class InStringListBehaviourTest
     {
+        private string InStringListTemplate = @"{""type"":""FeatureSwitcher.AwsConfiguration.Behaviours.InCustomerListBehaviour"",""value"":INPUT}";
+
         [Fact]
         public void InStringListBehaviour_Deserialization_InList_Test()
         {
-            var data = ConstructFeatureConfig.Execute("{\"L\": [{\"S\": \"queueitprod\"}]}");
+            var data = ConstructFeatureConfig.Execute(InStringListTemplate.Replace("INPUT", "{\"L\": [{\"S\": \"queueitprod\"}]}"));
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("queueitprod");
-            inList.SetConfiguration(data);
+            inList.SetConfiguration(data["value"]);
 
             var enabled = inList.Behaviour(new Feature.Name(typeof (TestFeature1), typeof (TestFeature1).FullName));
 
@@ -21,10 +23,10 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_SameValueTwice_Test()
         {
-            var data = ConstructFeatureConfig.Execute("{\"L\": [{\"S\": \"queueitprod\"},{\"S\": \"queueitprod\"}]}");
+            var data = ConstructFeatureConfig.Execute(InStringListTemplate.Replace("INPUT", "{\"L\": [{\"S\": \"queueitprod\"},{\"S\": \"queueitprod\"}]}"));
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("queueitprod");
-            inList.SetConfiguration(data);
+            inList.SetConfiguration(data["value"]);
 
             var enabled = inList.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
@@ -35,10 +37,10 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_NotInList_Test()
         {
-            var data = ConstructFeatureConfig.Execute("{\"L\": [{\"S\": \"queueitprod\"}]}");
+            var data = ConstructFeatureConfig.Execute(InStringListTemplate.Replace("INPUT", "{\"L\": [{\"S\": \"queueitprod\"}]}"));
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour("mala");
-            inList.SetConfiguration(data);
+            inList.SetConfiguration(data.value["value"]);
 
             var enabled = inList.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
@@ -48,10 +50,10 @@ namespace FeatureSwitcher.AwsConfiguration.Tests.Behaviours
         [Fact]
         public void InStringListBehaviour_Deserialization_NullValue_Test()
         {
-            var data = ConstructFeatureConfig.Execute("{\"L\": [{\"S\": \"queueitprod\"}]}");
+            var data = ConstructFeatureConfig.Execute(InStringListTemplate.Replace("INPUT", "{\"L\": [{\"S\": \"queueitprod\"}]}"));
 
             TestInStringListBehaviour inList = new TestInStringListBehaviour(null);
-            inList.SetConfiguration(data);
+            inList.SetConfiguration(data.value["value"]);
 
             var enabled = inList.Behaviour(new Feature.Name(typeof(TestFeature1), typeof(TestFeature1).FullName));
 
