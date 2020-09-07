@@ -15,7 +15,7 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
             ConfiguredValue = value;
         }
 
-        public void SetConfiguration(dynamic configValue)
+        public void SetConfiguration(string configValue)
         {
             if (configValue == null)
                 return;

@@ -14,7 +14,7 @@ namespace FeatureSwitcher.AwsConfiguration.Behaviours
             return this.IsInList();
         }
 
-        public void SetConfiguration(dynamic configValue)
+        public void SetConfiguration(string configValue)
         {
             if (configValue == null)
                 return;

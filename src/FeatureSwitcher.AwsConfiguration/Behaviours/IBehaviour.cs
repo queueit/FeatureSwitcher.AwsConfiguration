@@ -3,6 +3,6 @@
     public interface IBehaviour
     {
         bool? Behaviour(Feature.Name name);
-        void SetConfiguration(dynamic configValue);
+        void SetConfiguration(string configValue);
     }
 }
