@@ -24,8 +24,6 @@ namespace FeatureSwitcher.AwsConfiguration
             }
         }
 
-
-
         private async Task<string> PutAsync(string url, HttpClient httpClient, int retryCount)
         {
             string responseData = null;
